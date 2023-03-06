@@ -1,22 +1,35 @@
-FROM --platform=$BUILDPLATFORM rust:buster as base
+FROM --platform=$BUILDPLATFORM ubuntu:latest 
+
+RUN apt-get install build-essential
+# RUN apt-get update 
+# RUN apt-get upgrade
+# RUN apt-get install rustc
+RUN curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh
+# RUN curl https://sh.rustup.rs -sSf | sh
+RUN rustup component add rustfmt
+
 WORKDIR /app
 ARG TARGETARCH
 
 RUN dpkg --add-architecture ${TARGETARCH}
 
-RUN apt-get update && apt-get upgrade
-RUN apt-get install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler
 
-RUN rustup component add rustfmt
+# RUN apt-get install libssl-dev libudev-dev 
+# RUN apt-get install pkg-config zlib1g-dev
+# RUN apt-get install llvm clang
+# RUN apt-get install cmake make
+# RUN apt-get install libprotobuf-dev protobuf-compiler
 
 ARG SOLANA_VERSION=1.15.2
-RUN git clone https://github.com/solana-labs/solana.git
-WORKDIR /app/solana
-RUN git checkout tags/v${SOLANA_VERSION} -b v${SOLANA_VERSION}
-RUN ./cargo build
-RUN ./cargo test
+# RUN git clone git@github.com:solana-labs/solana.git
+# WORKDIR /app/solana
+# RUN git checkout tags/v${SOLANA_VERSION} -b v${SOLANA_VERSION}
+# RUN ./cargo build
+# RUN ./cargo test
 
-# RUN sh -c "$(curl -sSfL https://release.solana.com/v$SOLANA_VERSION/install)"
+RUN sh -c "$(curl -sSfL https://release.solana.com/v$SOLANA_VERSION/install)"
+WORKDIR /app/solana
+
 # RUN mkdir solana-raw
 # WORKDIR /solana-raw
 
